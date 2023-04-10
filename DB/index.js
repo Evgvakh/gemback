@@ -1,7 +1,6 @@
 export const dbParams = {
-      host: "localhost",
-      user: "root",
-      database: "gems",
-      password: "",
+  host: "sql7.freemysqlhosting.net",
+  user: "sql7612228",
+  database: "sql7612228",
+  password: "81BAxReJwh",
 };
-

@@ -42,7 +42,7 @@ app.get("/gems/:id", getAllGemsByCat);
 app.get("/collection/:id", getOneGem);
 app.get("/cats", getCategories);
 
-app.listen(process.env.PORT || 8081, (err) => {
+app.listen(process.env.PORT || 3306, (err) => {
   if (err) {
     return console.log("SERVER DOWN");
   } else {
