@@ -75,8 +75,7 @@ export const getAllItems = async (req, res) => {
     res.json(items);
   } catch (err) {
     res.json(err);
-  }
-  connection.
+  }  
 };
 
 export const getCarouselItems = async (req, res) => {
