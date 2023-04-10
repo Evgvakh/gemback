@@ -1,6 +1,6 @@
 export const dbParams = {
-  host: "sql7.freemysqlhosting.net",
-  user: "sql7612228",
-  database: "sql7612228",
-  password: "81BAxReJwh",
+  host: "sql.freedb.tech",
+  user: "freedb_EvgVakh",
+  database: "freedb_gemgarden",
+  password: "k8NUQ2PQA@mS$BP",
 };
