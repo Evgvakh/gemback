@@ -17,6 +17,7 @@ app.use(cors());
 app.use("/uploads/img", express.static("uploads/img"));
 app.use("/uploads/video", express.static("uploads/video"));
 app.use("/uploads/certificates", express.static("uploads/certificates"));
+app.use("/uploads/logo", express.static("uploads/logo"));
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -42,7 +43,7 @@ app.get("/gems/:id", getAllGemsByCat);
 app.get("/collection/:id", getOneGem);
 app.get("/cats", getCategories);
 
-app.listen(process.env.PORT || 3306, (err) => {
+app.listen(8081, (err) => {
   if (err) {
     return console.log("SERVER DOWN");
   } else {

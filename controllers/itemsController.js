@@ -39,7 +39,6 @@ async function getItemsWithImages(preparedReq, conn, id = null, lim = null, offs
     item.images = newImgsArr;
   });
 
-  
   return items;
 }
 
@@ -75,7 +74,7 @@ export const getAllItems = async (req, res) => {
     res.json(items);
   } catch (err) {
     res.json(err);
-  }  
+  }
 };
 
 export const getCarouselItems = async (req, res) => {
