@@ -66,7 +66,7 @@ app.get("/treatments", getTreatments);
 app.get("/clarities", getClarities);
 app.get("/avails", getAvails);
 
-app.listen(8081, (err) => {
+app.listen(process.env.PORT || 8081, (err) => {
   if (err) {
     return console.log("SERVER DOWN");
   } else {
