@@ -197,32 +197,3 @@ export const getOneGem = async (req, res) => {
   }
 };
 
-export const getCategories = async (req, res) => {
-  try {
-    const connection = mysql.createConnection(dbParams);
-
-    connection.connect(function (err) {
-      if (err) {
-        return console.error("Error: " + err.message);
-      } else {
-        console.log("Connected to DB");
-      }
-    });
-
-    const request = `SELECT * FROM categories`;
-
-    async function getItems() {
-      let res = await new Promise((res, rej) =>
-        connection.execute(request, (err, results) =>
-          err ? rej(err) : res(results)
-        )
-      );
-      return res;
-    }
-
-    const cats = await getItems();
-    res.json(cats);
-  } catch (err) {
-    res.json(err);
-  }
-};

@@ -6,9 +6,21 @@ import {
   getAllItems,
   getAllGemsByCat,
   getOneGem,
-  getCategories,
   getCarouselItems,
 } from "./controllers/itemsController.js";
+
+import { addItem } from "./controllers/adminController.js";
+import {
+  getCategories,
+  getSubcats,
+  getColors,
+  getOrigins,
+  getSets,
+  getCuts,
+  getTreatments,
+  getClarities,
+  getAvails
+} from "./controllers/fetchDBFields.js";
 
 const app = express();
 
@@ -37,13 +49,24 @@ app.post("/upload", upload.single("img"), (req, res) => {
   });
 });
 
+app.post('/admin/add', addItem);
+
 app.get("/gems", getAllItems);
 app.get("/gemscarousel", getCarouselItems);
 app.get("/gems/:id", getAllGemsByCat);
 app.get("/collection/:id", getOneGem);
-app.get("/cats", getCategories);
 
-app.listen(process.env.PORT || 8081, (err) => {
+app.get("/cats", getCategories);
+app.get("/subcats", getSubcats);
+app.get("/colors", getColors);
+app.get("/origins", getOrigins);
+app.get("/sets", getSets);
+app.get("/cuts", getCuts);
+app.get("/treatments", getTreatments);
+app.get("/clarities", getClarities);
+app.get("/avails", getAvails);
+
+app.listen(8081, (err) => {
   if (err) {
     return console.log("SERVER DOWN");
   } else {
