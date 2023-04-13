@@ -63,7 +63,7 @@ export const getAllItems = async (req, res) => {
                         clarity.name AS clarity,
                         treatment.name AS treatment
                         FROM items 
-                        JOIN categories on items.id_category = categories.id,
+                        JOIN categories on items.id_category = categories.id
                         JOIN subcategories on items.id_subcategory = subcategories.id
                         join colors on items.id_color = colors.id
                         join sets on items.id_set = sets.id
