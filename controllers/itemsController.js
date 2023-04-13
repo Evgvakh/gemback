@@ -55,6 +55,7 @@ export const getAllItems = async (req, res) => {
     });
     const request = `SELECT items.*,                    
                         categories.name AS category,
+                        subcategories.name AS subcategory,
                         colors.name AS color,
                         sets.name AS item_set,
                         cut.name AS cut,
@@ -62,7 +63,8 @@ export const getAllItems = async (req, res) => {
                         clarity.name AS clarity,
                         treatment.name AS treatment
                         FROM items 
-                        JOIN categories on items.id_category = categories.id
+                        JOIN categories on items.id_category = categories.id,
+                        JOIN subcategories on items.id_subcategory = subcategories.id
                         join colors on items.id_color = colors.id
                         join sets on items.id_set = sets.id
                         join cut on items.id_cut = cut.id
