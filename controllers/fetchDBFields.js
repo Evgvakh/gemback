@@ -203,3 +203,25 @@ export const getAvails = async (req, res) => {
     res.json(err);
   }
 };
+
+export const getSales = async (req, res) => {
+  try {
+    const connection = mysql.createConnection(dbParams);
+
+    connection.connect(function (err) {
+      if (err) {
+        return console.error("Error: " + err.message);
+      } else {
+        console.log("Connected to DB");
+      }
+    });
+
+    const request = `SELECT * FROM is_onsale`;
+
+    const sales = await getItems(connection, request);
+
+    res.json(sales);
+  } catch (err) {
+    res.json(err);
+  }
+};

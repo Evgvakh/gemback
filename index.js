@@ -19,7 +19,8 @@ import {
   getCuts,
   getTreatments,
   getClarities,
-  getAvails
+  getAvails,
+  getSales
 } from "./controllers/fetchDBFields.js";
 
 const app = express();
@@ -65,6 +66,7 @@ app.get("/cuts", getCuts);
 app.get("/treatments", getTreatments);
 app.get("/clarities", getClarities);
 app.get("/avails", getAvails);
+app.get("/sales", getSales);
 
 app.listen(process.env.PORT || 8081, (err) => {
   if (err) {
