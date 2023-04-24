@@ -162,7 +162,7 @@ export const deleteCert = (req, res) => {
         console.log("Connected to DB");
       }
     });
-    const request = "UPDATE items SET certificate = null WHERE id = ?";
+    const request = "UPDATE items SET certificate = '' WHERE id = ?";
     connection.execute(
       request,
       [req.params.id],
