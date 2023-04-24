@@ -90,7 +90,7 @@ app.patch("/admin/deleteCert/:id", deleteCert);
 app.delete("/admin/deleteImg/:id", deleteImg);
 app.delete("/admin/deleteItem/:id", deleteItem);
 
-app.listen(8081, (err) => {
+app.listen(process.env.PORT || 8081, (err) => {
   if (err) {
     return console.log("SERVER DOWN");
   } else {
