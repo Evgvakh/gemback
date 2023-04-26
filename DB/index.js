@@ -12,5 +12,12 @@ export const dbParams = {
 //   password: "",
 // };
 
+export const dbParamsRU = {
+  host: "pro.freedb.tech",
+  user: "gemgardenuser",
+  database: "gemsru",
+  password: "hN!6*K$u8?E2rKP",
+};
+
 
 

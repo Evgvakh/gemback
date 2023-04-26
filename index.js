@@ -17,7 +17,7 @@ import {
   deleteImg,
   deleteItem,
   editOneField,
-  testAdd
+  testAdd,
 } from "./controllers/adminController.js";
 
 import {
@@ -30,11 +30,30 @@ import {
   getTreatments,
   getClarities,
   getAvails,
-  getSales
+  getSales,
 } from "./controllers/fetchDBFields.js";
 
+import {
+  ruGetAllItems,
+  ruGetAllGemsByCat,
+  ruGetCarouselItems,
+  ruGetOneGem,
+} from "./controllers/ru/itemsControllerRU.js";
+import {
+  ruGetAvails,
+  ruGetCategories,
+  ruGetClarities,
+  ruGetColors,
+  ruGetCuts,
+  ruGetOrigins,
+  ruGetSales,
+  ruGetSets,
+  ruGetSubcats,
+  ruGetTreatments,
+} from "./controllers/ru/fetchDBFieldsRU.js";
+
 import { uploadCert, uploadImg, uploadVideo } from "./multerStorage/index.js";
- 
+
 const app = express();
 
 app.use(express.json());
@@ -45,17 +64,15 @@ app.use("/uploads/certificates", express.static("uploads/certificates"));
 app.use("/uploads/logo", express.static("uploads/logo"));
 app.use("/uploads/assets", express.static("uploads/assets"));
 
-
-
 app.post("/upload/img", uploadImg.array("img"), (req, res) => {
-  let imagesURLs = []
+  let imagesURLs = [];
   for (let i of req.files) {
     imagesURLs.push(`uploads/img/${i.originalname}`);
   }
-  res.json(imagesURLs);  
+  res.json(imagesURLs);
 });
 
-app.post("/upload/certs", uploadCert.single("certificate"), (req, res) => {  
+app.post("/upload/certs", uploadCert.single("certificate"), (req, res) => {
   res.json(`uploads/certificates/${req.file.originalname}`);
 });
 
@@ -63,6 +80,7 @@ app.post("/upload/video", uploadVideo.single("video"), (req, res) => {
   res.json(`uploads/video/${req.file.originalname}`);
 });
 
+/* ENGLISH VERSION */
 app.post("/admin/add", addItem);
 app.post("/admin/addImgs", addImgs);
 app.post("/admin/addCertificate", addCertificate);
@@ -89,6 +107,24 @@ app.patch("/admin/deleteCert/:id", deleteCert);
 
 app.delete("/admin/deleteImg/:id", deleteImg);
 app.delete("/admin/deleteItem/:id", deleteItem);
+
+/*RUSSIAN VERSION */
+
+app.get("/ru/gems", ruGetAllItems);
+app.get("/ru/gemscarousel", ruGetCarouselItems);
+app.get("/ru/gems/:id", ruGetAllGemsByCat);
+app.get("/ru/collection/:id", ruGetOneGem);
+
+app.get("/ru/cats", ruGetCategories);
+app.get("/ru/subcats", ruGetSubcats);
+app.get("/ru/colors", ruGetColors);
+app.get("/ru/origins", ruGetOrigins);
+app.get("/ru/sets", ruGetSets);
+app.get("/ru/cuts", ruGetCuts);
+app.get("/ru/treatments", ruGetTreatments);
+app.get("/ru/clarities", ruGetClarities);
+app.get("/ru/avails", ruGetAvails);
+app.get("/ru/sales", ruGetSales);
 
 app.listen(process.env.PORT || 8081, (err) => {
   if (err) {
