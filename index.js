@@ -7,6 +7,8 @@ import {
   getAllGemsByCat,
   getOneGem,
   getCarouselItems,
+  getGlossItems,
+  getDescription,
 } from "./controllers/itemsController.js";
 
 import {
@@ -17,7 +19,10 @@ import {
   deleteImg,
   deleteItem,
   editOneField,
-  testAdd,
+  addFieldToTable,
+  editFieldOfTable,
+  deleteFieldFromTable,
+  addGlossItem
 } from "./controllers/adminController.js";
 
 import {
@@ -84,12 +89,14 @@ app.post("/upload/video", uploadVideo.single("video"), (req, res) => {
 app.post("/admin/add", addItem);
 app.post("/admin/addImgs", addImgs);
 app.post("/admin/addCertificate", addCertificate);
-app.post("/admin/test", testAdd);
+app.post("/admin/addfield/:type", addFieldToTable);
+app.post("/gloss/addItem", addGlossItem);
 
 app.get("/gems", getAllItems);
 app.get("/gemscarousel", getCarouselItems);
 app.get("/gems/:id", getAllGemsByCat);
 app.get("/collection/:id", getOneGem);
+app.get("/descr/:table/:id", getDescription);
 
 app.get("/cats", getCategories);
 app.get("/subcats", getSubcats);
@@ -102,11 +109,17 @@ app.get("/clarities", getClarities);
 app.get("/avails", getAvails);
 app.get("/sales", getSales);
 
+app.get("/gloss", getGlossItems);
+
 app.patch("/admin/editfield/:type", editOneField);
 app.patch("/admin/deleteCert/:id", deleteCert);
+app.patch("/admin/edittablefield/:type", editFieldOfTable);
 
 app.delete("/admin/deleteImg/:id", deleteImg);
 app.delete("/admin/deleteItem/:id", deleteItem);
+app.delete("/admin/deletefield/:type/:id", deleteFieldFromTable);
+
+
 
 /*RUSSIAN VERSION */
 

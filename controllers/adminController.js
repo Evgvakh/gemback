@@ -1,11 +1,6 @@
 import mysql from "mysql2";
 import { dbParams } from "../DB/index.js";
 
-export const testAdd = (req, res) => {
-  console.log(req.body.cat);
-  res.json(req.body);
-}
-
 export const addItem = (req, res) => {
   try {
     const connection = mysql.createConnection(dbParams);
@@ -51,6 +46,13 @@ export const addItem = (req, res) => {
         }
       }
     );
+    connection.end((err, conn) => {
+      if (err) {
+        console.error("Unable to close connection");
+      } else {
+        console.log("Connection closed");
+      }
+    });
   } catch (err) {
     console.error(err);
   }
@@ -85,6 +87,13 @@ export const addImgs = (req, res) => {
         }
       }
     );
+    connection.end((err, conn) => {
+      if (err) {
+        console.error("Unable to close connection");
+      } else {
+        console.log("Connection closed");
+      }
+    });
   } catch (err) {
     console.error(err);
   }
@@ -115,6 +124,13 @@ export const addCertificate = (req, res) => {
         }
       }
     );
+    connection.end((err, conn) => {
+      if (err) {
+        console.error("Unable to close connection");
+      } else {
+        console.log("Connection closed");
+      }
+    });
   } catch (err) {
     console.error(err);
   }
@@ -146,6 +162,13 @@ export const deleteImg = (req, res) => {
         }
       }
     );
+    connection.end((err, conn) => {
+      if (err) {
+        console.error("Unable to close connection");
+      } else {
+        console.log("Connection closed");
+      }
+    });
   } catch (err) {
     console.error(err);
   }
@@ -177,6 +200,13 @@ export const deleteCert = (req, res) => {
         }
       }
     );
+    connection.end((err, conn) => {
+      if (err) {
+        console.error("Unable to close connection");
+      } else {
+        console.log("Connection closed");
+      }
+    });
   } catch (err) {
     console.error(err);
   }
@@ -208,6 +238,13 @@ export const deleteItem = (req, res) => {
         }
       }
     );
+    connection.end((err, conn) => {
+      if (err) {
+        console.error("Unable to close connection");
+      } else {
+        console.log("Connection closed");
+      }
+    });
   } catch (err) {
     console.error(err);
   }
@@ -244,3 +281,154 @@ export const editOneField = (req, res) => {
     console.error(err);
   }
 }
+
+export const addFieldToTable = (req, res) => {
+  try {
+    const connection = mysql.createConnection(dbParams);
+
+    connection.connect(function (err) {
+      if (err) {
+        return console.error("Error: " + err.message);
+      } else {
+        console.log("Connected to DB");
+      }
+    });
+    const request = `INSERT INTO ${req.params.type} (name) VALUES (?)`;
+
+    connection.execute(
+      request,
+      [req.body.field],
+      function (err, results, fields) {
+        if (err) {
+          res.send(err);
+        } else {
+          res.send({
+            Message: results,
+            Fields: fields,
+          });
+        }
+      }
+    );
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export const editFieldOfTable = (req, res) => {
+  try {
+    const connection = mysql.createConnection(dbParams);
+
+    connection.connect(function (err) {
+      if (err) {
+        return console.error("Error: " + err.message);
+      } else {
+        console.log("Connected to DB");
+      }
+    });
+    const request = `UPDATE ${req.params.type} SET name = ? WHERE id = ?`;
+
+    connection.execute(
+      request,
+      [req.body.name, req.body.id],
+      function (err, results, fields) {
+        if (err) {
+          res.send(err);
+        } else {
+          res.send({
+            Message: results,
+            Fields: fields,
+          });
+        }
+      }
+    );
+    connection.end((err, conn) => {
+      if (err) {
+        console.error("Unable to close connection");
+      } else {
+        console.log("Connection closed");
+      }
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const deleteFieldFromTable = (req, res) => {
+  try {
+    const connection = mysql.createConnection(dbParams);
+
+    connection.connect(function (err) {
+      if (err) {
+        return console.error("Error: " + err.message);
+      } else {
+        console.log("Connected to DB");
+      }
+    });
+    
+    const request = `DELETE FROM ${req.params.type} WHERE id = ?`;
+    connection.execute(
+      request,
+      [req.params.id],
+      function (err, results, fields) {
+        if (err) {
+          res.send(err);
+        } else {
+          res.send({
+            Message: results,
+            Fields: fields,
+          });
+        }
+      }
+    );
+    connection.end((err, conn) => {
+      if (err) {
+        console.error("Unable to close connection");
+      } else {
+        console.log("Connection closed");
+      }
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const addGlossItem = (req, res) => {
+  try {
+    const connection = mysql.createConnection(dbParams);
+
+    connection.connect(function (err) {
+      if (err) {
+        return console.error("Error: " + err.message);
+      } else {
+        console.log("Connected to DB");
+      }
+    });
+
+    const request = `INSERT INTO glossarium (title, id_category, text) VALUES (?, ?, ?)`;
+    console.log(req.body.title, req.body.id_category, req.body.text);
+    connection.execute(
+      request,
+      [req.body.title, req.body.id_category, req.body.text],
+      function (err, results, fields) {
+        if (err) {
+          res.send(err);
+        } else {
+          res.send({
+            Message: results,
+            Fields: fields,
+          });
+        }
+      }
+    );
+
+    connection.end((err, conn) => {
+      if (err) {
+        console.error("Unable to close connection");
+      } else {
+        console.log("Connection closed");
+      }
+    });
+  } catch (err) {
+    res.json(err);
+  }
+};
