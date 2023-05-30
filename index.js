@@ -159,7 +159,7 @@ app.get("/ru/clarities", ruGetClarities);
 app.get("/ru/avails", ruGetAvails);
 app.get("/ru/sales", ruGetSales);
 
-app.listen(process.env.PORT, (err) => {
+app.listen(process.env.PORT || 4444, (err) => {
   if (err) {
     return console.log("SERVER DOWN");
   } else {
