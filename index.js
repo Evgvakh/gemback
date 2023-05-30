@@ -1,5 +1,4 @@
 import express from "express";
-
 import cors from "cors";
 
 import {
@@ -8,9 +7,9 @@ import {
   getOneGem,
   getCarouselItems,
   getGlossItems,
+  getOneGlossItem,
   getDescription,
 } from "./controllers/itemsController.js";
-
 import {
   addCertificate,
   addImgs,
@@ -22,9 +21,12 @@ import {
   addFieldToTable,
   editFieldOfTable,
   deleteFieldFromTable,
-  addGlossItem
+  addGlossItem,
+  deleteGlossItem,
+  editGlossItem,
+  addGlossImgs,
+  deleteGlossImg,
 } from "./controllers/adminController.js";
-
 import {
   getCategories,
   getSubcats,
@@ -57,7 +59,9 @@ import {
   ruGetTreatments,
 } from "./controllers/ru/fetchDBFieldsRU.js";
 
-import { uploadCert, uploadImg, uploadVideo } from "./multerStorage/index.js";
+import { register, login } from './controllers/userController.js';
+
+import { uploadCert, uploadImg, uploadVideo, uploadGlossImg } from "./multerStorage/index.js";
 
 const app = express();
 
@@ -68,11 +72,21 @@ app.use("/uploads/video", express.static("uploads/video"));
 app.use("/uploads/certificates", express.static("uploads/certificates"));
 app.use("/uploads/logo", express.static("uploads/logo"));
 app.use("/uploads/assets", express.static("uploads/assets"));
+app.use("/uploads/gloss", express.static("uploads/gloss"));
+
 
 app.post("/upload/img", uploadImg.array("img"), (req, res) => {
   let imagesURLs = [];
   for (let i of req.files) {
     imagesURLs.push(`uploads/img/${i.originalname}`);
+  }
+  res.json(imagesURLs);
+});
+
+app.post("/upload/glossImg", uploadGlossImg.array("img"), (req, res) => {
+  let imagesURLs = [];
+  for (let i of req.files) {
+    imagesURLs.push(`uploads/gloss/${i.originalname}`);
   }
   res.json(imagesURLs);
 });
@@ -88,6 +102,7 @@ app.post("/upload/video", uploadVideo.single("video"), (req, res) => {
 /* ENGLISH VERSION */
 app.post("/admin/add", addItem);
 app.post("/admin/addImgs", addImgs);
+app.post("/admin/addGlossImgs", addGlossImgs);
 app.post("/admin/addCertificate", addCertificate);
 app.post("/admin/addfield/:type", addFieldToTable);
 app.post("/gloss/addItem", addGlossItem);
@@ -110,16 +125,21 @@ app.get("/avails", getAvails);
 app.get("/sales", getSales);
 
 app.get("/gloss", getGlossItems);
+app.get("/gloss/:id", getOneGlossItem);
 
 app.patch("/admin/editfield/:type", editOneField);
 app.patch("/admin/deleteCert/:id", deleteCert);
-app.patch("/admin/edittablefield/:type", editFieldOfTable);
+app.patch("/admin/edittablefield/:type/:field", editFieldOfTable);
+app.patch("/gloss/editItem", editGlossItem);
 
 app.delete("/admin/deleteImg/:id", deleteImg);
 app.delete("/admin/deleteItem/:id", deleteItem);
 app.delete("/admin/deletefield/:type/:id", deleteFieldFromTable);
+app.delete("/admin/deleteGlossItem/:id", deleteGlossItem);
+app.delete("/admin/deleteGlossImg/:id", deleteGlossImg);
 
-
+app.post("/user/register", register);
+app.post("/user/login", login);
 
 /*RUSSIAN VERSION */
 

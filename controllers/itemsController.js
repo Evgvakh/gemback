@@ -1,73 +1,12 @@
 import mysql from "mysql2";
 import { dbParams } from "../DB/index.js";
-
-async function getItems(preparedReq, conn, parameters = null) {
-  try {
-    let res = await new Promise((res, rej) =>
-      conn.execute(preparedReq, parameters, (err, results) =>
-        err ? rej(err) : res(results)
-      )
-    );
-    return res;
-  } catch (err) {
-    return err;
-  }
-}
-
-async function getItemsWithImages(preparedReq, conn, id = null, lim = null, offs = null) {
-  async function getItems() {
-    try {
-      let res = await new Promise((res, rej) =>
-        conn.execute(preparedReq, [id], (err, results) =>
-          err ? rej(err) : res(results)
-        )
-      );
-      return res;
-    } catch (err) {
-      return err;
-    }
-  }
-
-  async function getImages() {
-    try {
-      let res = await new Promise((res, rej) =>
-        conn.execute(`SELECT * FROM images`, (err, results) =>
-          err ? rej(err) : res(results)
-        )
-      );
-      return res;
-    } catch (err) {
-      return err;
-    }
-  }
-
-  const items = await getItems();
-  const images = await getImages();
-
-  items.map((item) => {
-    let imgs = images.filter((img) => img.id_item === item.id);
-    let newImgsArr = imgs.map((el) => {
-      return { id: el.id, img: el.img };
-    });
-    item.images = newImgsArr;
-
-    item.titleImg = newImgsArr.length > 0 ? newImgsArr[0].img : '';
-  });
-
-  return items;
-}
-
+import { getItems, getItemsWithImages, connect, disconnect } from '../utils/index.js';
+ 
 export const getAllItems = async (req, res) => {
-  try {
+  try {   
     const connection = mysql.createConnection(dbParams);
-
-    connection.connect(function (err) {
-      if (err) {
-        return console.error("Error: " + err.message);
-      } else {
-        console.log("Connected to DB");
-      }
-    });
+    connect(connection);
+    
     const request = `SELECT items.*,                    
                         categories.name AS category,
                         colors.name AS color,
@@ -92,17 +31,10 @@ export const getAllItems = async (req, res) => {
                         join is_onsale on items.id_is_onsale = is_onsale.id
                         ORDER BY id ASC`;
 
-    const items = await getItemsWithImages(request, connection);
-
+    const items = await getItemsWithImages(request, connection, 'images');
     res.json(items);
-
-    connection.end((err, conn) => {
-      if (err) {
-        console.error("Unable to close connection");
-      } else {
-        console.log("Connection closed");
-      }
-    });
+    
+    disconnect(connection);
   } catch (err) {
     res.json(err);
   }
@@ -112,14 +44,7 @@ export const getAllItems = async (req, res) => {
 export const getCarouselItems = async (req, res) => {
   try {
     const connection = mysql.createConnection(dbParams);
-
-    connection.connect(function (err) {
-      if (err) {
-        return console.error("Error: " + err.message);
-      } else {
-        console.log("Connected to DB");
-      }
-    });
+    connect(connection);
 
     const request = `SELECT items.*,                    
                         categories.name AS category,
@@ -144,18 +69,11 @@ export const getCarouselItems = async (req, res) => {
                         join available on items.id_availability = available.id
                         join is_onsale on items.id_is_onsale = is_onsale.id
                         ORDER BY added DESC
-                        LIMIT 8`;
+                        LIMIT 6`;
 
-    const items = await getItemsWithImages(request, connection);
+    const items = await getItemsWithImages(request, connection, 'images');
     res.json(items);
-
-    connection.end((err, conn) => {
-      if (err) {
-        console.error("Unable to close connection");
-      } else {
-        console.log("Connection closed");
-      }
-    });
+    disconnect(connection);
   } catch (err) {
     res.json(err);
   }
@@ -164,14 +82,7 @@ export const getCarouselItems = async (req, res) => {
 export const getAllGemsByCat = async (req, res) => {
   try {
     const connection = mysql.createConnection(dbParams);
-
-    connection.connect(function (err) {
-      if (err) {
-        return console.error("Error: " + err.message);
-      } else {
-        console.log("Connected to DB");
-      }
-    });
+    connect(connection);
 
     const request = `SELECT items.*,                    
                         categories.name AS category,
@@ -195,20 +106,12 @@ export const getAllGemsByCat = async (req, res) => {
                         join treatment on items.id_treatment = treatment.id
                         join available on items.id_availability = available.id
                         join is_onsale on items.id_is_onsale = is_onsale.id
-                        WHERE id_category = ?`;
-    const id_cat = req.params.id;
+                        WHERE id_category = ?`;    
 
-    const items = await getItemsWithImages(request, connection, id_cat);
-
+    const items = await getItemsWithImages(request, connection, 'images', req.params.id);
     res.json(items);
 
-    connection.end((err, conn) => {
-      if (err) {
-        console.error("Unable to close connection");
-      } else {
-        console.log("Connection closed");
-      }
-    });
+    disconnect(connection);
   } catch (err) {
     res.json(err);
   }
@@ -217,14 +120,7 @@ export const getAllGemsByCat = async (req, res) => {
 export const getOneGem = async (req, res) => {
   try {
     const connection = mysql.createConnection(dbParams);
-
-    connection.connect(function (err) {
-      if (err) {
-        return console.error("Error: " + err.message);
-      } else {
-        console.log("Connected to DB");
-      }
-    });
+    connect(connection);
 
     const request = `SELECT items.*,                    
                         categories.name AS category,
@@ -250,62 +146,49 @@ export const getOneGem = async (req, res) => {
                         join is_onsale on items.id_is_onsale = is_onsale.id
                         WHERE items.id = ?`;
     const id = req.params.id;
-    const items = await getItemsWithImages(request, connection, id);
+    const items = await getItemsWithImages(request, connection, 'images', id);
     res.json(items[0]);
 
-    connection.end((err, conn) => {
-      if (err) {
-        console.error("Unable to close connection");
-      } else {
-        console.log("Connection closed");
-      }
-    });
+    disconnect(connection);
   } catch (err) {
     res.json(err);
   }
 };
 
-
 export const getGlossItems = async (req, res) => {
   try {
     const connection = mysql.createConnection(dbParams);
-
-    connection.connect(function (err) {
-      if (err) {
-        return console.error("Error: " + err.message);
-      } else {
-        console.log("Connected to DB");
-      }
-    });
+    connect(connection);
 
     const request = `SELECT glossarium.*,
                       categories.name AS category
                       FROM glossarium
-                      JOIN categories on glossarium.id_category = categories.id`;
+                      JOIN categories on glossarium.id_category = categories.id`;    
 
-    async function getItems(preparedReq, conn) {
-      try {
-        let res = await new Promise((res, rej) =>
-          conn.execute(preparedReq, (err, results) =>
-            err ? rej(err) : res(results)
-          )
-        );
-        return res;
-      } catch (err) {
-        return err;
-      }
-    }
-
-    const items = await getItems(request, connection);
+    const items = await getItemsWithImages(request, connection, 'gloss_images');    
     res.json(items);
 
-    connection.end((err, conn) => {
-      if (err) {
-        console.error("Unable to close connection");
-      } else {
-        console.log("Connection closed");
-      }
-    });
+    disconnect(connection);
+  } catch (err) {
+    res.json(err);
+  }
+};
+
+export const getOneGlossItem = async (req, res) => {
+  try {
+    const connection = mysql.createConnection(dbParams);
+    connect(connection);
+
+    const request = `SELECT glossarium.*,
+                      categories.name AS category
+                      FROM glossarium
+                      JOIN categories on glossarium.id_category = categories.id
+                      WHERE glossarium.id = ?`;    
+
+    const items = await getItemsWithImages(request, connection, 'gloss_images', req.params.id);
+    res.json(items[0]);
+
+    disconnect(connection);
   } catch (err) {
     res.json(err);
   }
@@ -314,27 +197,14 @@ export const getGlossItems = async (req, res) => {
 export const getDescription = async (req, res) => {
   try {
     const connection = mysql.createConnection(dbParams);
-
-    connection.connect(function (err) {
-      if (err) {
-        return console.error("Error: " + err.message);
-      } else {
-        console.log("Connected to DB");
-      }
-    });
+    connect(connection);
 
     const request = `SELECT description FROM ${req.params.table} WHERE id = ?`;
 
     const items = await getItems(request, connection, [req.params.id]);
     res.json(items[0].description);
 
-    connection.end((err, conn) => {
-      if (err) {
-        console.error("Unable to close connection");
-      } else {
-        console.log("Connection closed");
-      }
-    });
+    disconnect(connection);
   } catch (err) {
     res.json(err);
   }

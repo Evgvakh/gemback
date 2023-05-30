@@ -11,6 +11,17 @@ const storageImg = multer.diskStorage({
 });
 export const uploadImg = multer({ storage: storageImg });
 
+const storageGlossImg = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/gloss");
+  },
+
+  filename: (_, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+export const uploadGlossImg = multer({ storage: storageGlossImg });
+
 const storageCert = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/certificates");
